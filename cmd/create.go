@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"fmt"
@@ -7,16 +7,15 @@ import (
 	"github.com/urfave/cli"
 )
 
-// default action is to start a container
-var runCommand = cli.Command{
-	Name:  "run",
-	Usage: "create and run a container",
+var createCommand = cli.Command{
+	Name:  "create",
+	Usage: "create a container",
 	ArgsUsage: `<container-id>
 
 Where "<container-id>" is your name for the instance of the container that you
 are starting. The name you provide for the container instance must be unique on
 your host.`,
-	Description: `The run command creates an instance of a container for a bundle. The bundle
+	Description: `The create command creates an instance of a container for a bundle. The bundle
 is a directory with a specification file named "` + specConfig + `" and a root
 filesystem.
 
@@ -35,22 +34,10 @@ command(s) that get executed on start, edit the args parameter of the spec. See
 			Value: "",
 			Usage: "path to an AF_UNIX socket which will receive a file descriptor referencing the master end of the console's pseudoterminal",
 		},
-		cli.BoolFlag{
-			Name:  "detach, d",
-			Usage: "detach from the container's process",
-		},
-		cli.BoolFlag{
-			Name:  "keep",
-			Usage: "do not delete the container after it exits",
-		},
 		cli.StringFlag{
 			Name:  "pid-file",
 			Value: "",
 			Usage: "specify the file to write the process id to",
-		},
-		cli.BoolFlag{
-			Name:  "no-subreaper",
-			Usage: "disable the use of the subreaper used to reap reparented processes",
 		},
 		cli.BoolFlag{
 			Name:  "no-pivot",
@@ -69,12 +56,12 @@ command(s) that get executed on start, edit the args parameter of the spec. See
 		if err := checkArgs(context, 1, exactArgs); err != nil {
 			return err
 		}
-		status, err := startContainer(context, CT_ACT_RUN, nil)
+		status, err := startContainer(context, CT_ACT_CREATE, nil)
 		if err == nil {
-			// exit with the container's exit status so any external supervisor is
-			// notified of the exit with the correct exit status.
+			// exit with the container's exit status so any external supervisor
+			// is notified of the exit with the correct exit status.
 			os.Exit(status)
 		}
-		return fmt.Errorf("runc run failed: %w", err)
+		return fmt.Errorf("runc create failed: %w", err)
 	},
 }
