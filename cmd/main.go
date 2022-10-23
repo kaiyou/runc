@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"errors"
@@ -52,7 +52,7 @@ your host. Providing the bundle directory using "-b" is optional. The default
 value for "bundle" is the current directory.`
 )
 
-func main() {
+func Run() {
 	app := cli.NewApp()
 	app.Name = "runc"
 	app.Usage = usage
